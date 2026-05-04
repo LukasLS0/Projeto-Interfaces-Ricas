@@ -1,23 +1,23 @@
-<div class="page-shell">
-    <section class="hero">
+<div class="page-shell min-h-screen bg-slate-950 text-slate-100">
+    <section class="hero border border-cyan-500/20 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
         <div class="hero-text-block">
             <p class="eyebrow">SOC dashboard</p>
             <h1>{{ title }}</h1>
-            <p class="hero-description">
+            <p class="hero-description text-slate-300">
                 Pequeno painel para controlar IPs suspeitos, ver detalhes e manter a lista de bloqueios atualizada.
             </p>
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card text-slate-100">
                 <span>Total</span>
                 <strong>{{ totalIps() }}</strong>
             </div>
-            <div class="stat-card">
+            <div class="stat-card text-slate-100">
                 <span>Bloqueados</span>
                 <strong>{{ ipsBloqueados() }}</strong>
             </div>
-            <div class="stat-card">
+            <div class="stat-card text-slate-100">
                 <span>Em alerta</span>
                 <strong>{{ ipsAlerta() }}</strong>
             </div>
@@ -25,7 +25,7 @@
     </section>
 
     <section class="workspace">
-        <p-card class="panel form-panel">
+        <p-card class="panel form-panel rounded-3xl bg-slate-900/90 text-slate-100 backdrop-blur-sm">
             <ng-template pTemplate="title">
                 {{ editingId() === null ? 'Incluir IP' : 'Alterar IP' }}
             </ng-template>
@@ -36,7 +36,7 @@
                 <form class="ip-form" [formGroup]="form" (ngSubmit)="salvar()">
                     <div class="field">
                         <label for="ip">Endereço IP</label>
-                        <input pInputText id="ip" type="text" formControlName="ip" placeholder="Ex: 192.168.0.14" />
+                        <input pInputText id="ip" type="text" formControlName="ip" placeholder="Ex: 192.168.0.14" class="w-full border-cyan-500/20 bg-slate-950/70 text-slate-100 placeholder:text-slate-500" />
                         @if (form.controls.ip.touched && form.controls.ip.invalid) {
                         <small class="error">Informe um IP válido.</small>
                         }
@@ -44,7 +44,7 @@
 
                     <div class="field">
                         <label for="tentativas">Tentativas</label>
-                        <p-inputNumber inputId="tentativas" formControlName="tentativas" [min]="1"></p-inputNumber>
+                        <p-inputNumber inputId="tentativas" formControlName="tentativas" [min]="1" styleClass="w-full"></p-inputNumber>
                         @if (form.controls.tentativas.touched && form.controls.tentativas.invalid) {
                         <small class="error">Informe pelo menos 1 tentativa.</small>
                         }
@@ -52,11 +52,10 @@
 
                     <div class="field">
                         <label for="origem">Origem</label>
-                        <input pInputText id="origem" type="text" formControlName="origem" placeholder="Ex: Firewall" />
+                        <input pInputText id="origem" type="text" formControlName="origem" placeholder="Ex: Firewall" class="w-full border-cyan-500/20 bg-slate-950/70 text-slate-100 placeholder:text-slate-500" />
                         @if (form.controls.origem.touched && form.controls.origem.invalid) {
                         <small class="error">Informe a origem do alerta.</small>
                         }
-                        
                     </div>
 
                     <div class="field checkbox-field">
@@ -65,25 +64,25 @@
                     </div>
 
                     <div class="buttons">
-                        <button pButton type="submit" label="Salvar" class="full-width"></button>
-                        <button pButton type="button" label="Limpar" severity="secondary" class="full-width" (click)="limpar()"></button>
+                        <button pButton type="submit" label="Salvar" class="full-width !border-0 !bg-cyan-500 !text-slate-950 hover:!bg-cyan-400"></button>
+                        <button pButton type="button" label="Limpar" severity="secondary" class="full-width !border-0 !bg-slate-800 !text-cyan-100 hover:!bg-slate-700" (click)="limpar()"></button>
                     </div>
                 </form>
             </ng-template>
         </p-card>
 
-        <p-card class="panel table-panel">
+        <p-card class="panel table-panel rounded-3xl bg-slate-900/90 text-slate-100 backdrop-blur-sm">
             <ng-template pTemplate="title">Lista de IPs</ng-template>
-            <ng-template pTemplate="subtitle">Os suspeitos.</ng-template> 
+            <ng-template pTemplate="subtitle">Os suspeitos.</ng-template>
             <ng-template pTemplate="content">
-                <p-table [value]="ips()" dataKey="id" responsiveLayout="scroll">
+                <p-table [value]="ips()" dataKey="id" responsiveLayout="scroll" styleClass="text-slate-100">
                     <ng-template pTemplate="header">
                         <tr>
-                            <th>IP</th>
-                            <th>Tentativas</th>
-                            <th>Status</th>
-                            <th>Origem</th>
-                            <th>Ações</th>
+                            <th class="bg-slate-950/70 text-cyan-200">IP</th>
+                            <th class="bg-slate-950/70 text-cyan-200">Tentativas</th>
+                            <th class="bg-slate-950/70 text-cyan-200">Status</th>
+                            <th class="bg-slate-950/70 text-cyan-200">Origem</th>
+                            <th class="bg-slate-950/70 text-cyan-200">Ações</th>
                         </tr>
                     </ng-template>
 
@@ -97,8 +96,8 @@
                             <td>{{ item.origem }}</td>
                             <td>
                                 <div class="row-actions">
-                                    <button pButton type="button" label="Editar" (click)="editar(item)"></button>
-                                    <button pButton type="button" label="Remover" severity="danger" (click)="remover(item)"></button>
+                                    <button pButton type="button" label="Editar" class="!border-0 !bg-sky-500 !text-slate-950 hover:!bg-sky-400" (click)="editar(item)"></button>
+                                    <button pButton type="button" label="Remover" severity="danger" class="!border-0 !bg-rose-500 !text-white hover:!bg-rose-400" (click)="remover(item)"></button>
                                 </div>
                             </td>
                         </tr>
