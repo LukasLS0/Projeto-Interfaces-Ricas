@@ -36,7 +36,7 @@
                 <form class="ip-form" [formGroup]="form" (ngSubmit)="salvar()">
                     <div class="field">
                         <label for="ip">Endereço IP</label>
-                        <input pInputText id="ip" type="text" formControlName="ip" placeholder="Ex: 192.168.0.14" class="w-full border-cyan-500/20 bg-slate-950/70 text-slate-100 placeholder:text-slate-500" />
+                        <input pInputText id="ip" type="text" formControlName="ip" placeholder="Ex: 192.168.0.14" class="w-full border-cyantext-slate--500/20 bg-slate-950/70 100 placeholder:text-slate-500" />
                         @if (form.controls.ip.touched && form.controls.ip.invalid) {
                         <small class="error">Informe um IP válido.</small>
                         }
