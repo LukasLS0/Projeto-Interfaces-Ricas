@@ -1,109 +1,108 @@
-<div class="page-shell min-h-screen bg-slate-950 text-slate-100">
-    <section class="hero border border-cyan-500/20 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
-        <div class="hero-text-block">
-            <p class="eyebrow">SOC dashboard</p>
-            <h1>{{ title }}</h1>
-            <p class="hero-description text-slate-300">
-                Pequeno painel para controlar IPs suspeitos, ver detalhes e manter a lista de bloqueios atualizada.
-            </p>
+<section class="flex mx-auto justify-center items-center">
+    <form class="flex flex-col gap-4 w-128">
+        <label for=" ip">IP</label>
+        <input type="text" id="ip" [formField]="ipBloqForm.ip" class="border-1" />
+        @if (ipBloqForm.ip().touched() && ipBloqForm.ip().invalid()) {
+        @for (error of ipBloqForm.ip().errors(); track error) {
+        <small class="error text-red-500">{{ error.message }}</small>
+        }
+        }
+
+
+        <label for="tentativas">Tentativas</label>
+        <input type="number" id="tentativas" [formField]="ipBloqForm.tentativas" class="border-1" />
+        @if (ipBloqForm.tentativas().touched() && ipBloqForm.tentativas().invalid()) {
+        @for (error of ipBloqForm.tentativas().errors(); track error) {
+        <small class="error text-red-500">{{ error.message }}</small>
+        }
+        }
+
+        <label for="bloqueado">IP bloqueado</label>
+        <input type="checkbox" id="bloqueado" [formField]="ipBloqForm.bloqueado" class="border-1" />
+
+        <label for="origem">Origem</label>
+        <input type="text" id="origem" [formField]="ipBloqForm.origem" class="border-1" />
+        @if (ipBloqForm.origem().touched() && ipBloqForm.origem().invalid()) {
+        @for (error of ipBloqForm.origem().errors(); track error) {
+        <small class="error text-red-500">{{ error.message }}</small>
+        }
+        }
+        <div class="flex flex-row gap-2">
+            <button class="border-2" type="submit" (click)="salvar()">Salvar</button>
+            <button class="border-2" type="button" (click)="limpar()">Limpar</button>
         </div>
+    </form>
+</section>
 
-        <div class="stats-grid">
-            <div class="stat-card text-slate-100">
-                <span>Total</span>
-                <strong>{{ totalIps() }}</strong>
-            </div>
-            <div class="stat-card text-slate-100">
-                <span>Bloqueados</span>
-                <strong>{{ ipsBloqueados() }}</strong>
-            </div>
-            <div class="stat-card text-slate-100">
-                <span>Em alerta</span>
-                <strong>{{ ipsAlerta() }}</strong>
-            </div>
-        </div>
-    </section>
+<div class="card border-1 p-4 w-full">
+    <p-table [value]="ipBloqList()" dataKey="id" editMode="row" class="min-w-200">
+        <ng-template #header>
+            <tr>
+                <th class="w-[15%] text-center font-bold text-lg">IP</th>
+                <th class="w-[15%] text-center font-bold text-lg">Tentativas</th>
+                <th class="w-[15%] text-center font-bold text-lg">Status</th>
+                <th class="w-[15%] text-center font-bold text-lg">Origem</th>
+                <th class="w-[25%] text-center font-bold text-lg">Ações</th>
+            </tr>
+        </ng-template>
 
-    <section class="workspace">
-        <p-card class="panel form-panel rounded-3xl bg-slate-900/90 text-slate-100 backdrop-blur-sm">
-            <ng-template pTemplate="title">
-                {{ editingId() === null ? 'Incluir IP' : 'Alterar IP' }}
-            </ng-template>
-            <ng-template pTemplate="subtitle">
-                Cadastre o endereço, a origem da ocorrência e a quantidade de tentativas.
-            </ng-template>
-            <ng-template pTemplate="content">
-                <form class="ip-form" [formGroup]="form" (ngSubmit)="salvar()">
-                    <div class="field">
-                        <label for="ip">Endereço IP</label>
-                        <input pInputText id="ip" type="text" formControlName="ip" placeholder="Ex: 192.168.0.14" class="w-full border-cyantext-slate--500/20 bg-slate-950/70 100 placeholder:text-slate-500" />
-                        @if (form.controls.ip.touched && form.controls.ip.invalid) {
-                        <small class="error">Informe um IP válido.</small>
+        <ng-template #body let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="rowData">
+                <td class="text-center">
+                    <p-cellEditor>
+                        <ng-template #input>
+                            <input type="text" pInputText [(ngModel)]="rowData.ip" />
+                        </ng-template>
+                        <ng-template #output>
+                            {{ rowData.ip }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td class="text-center">
+                    <p-cellEditor>
+                        <ng-template #input>
+                            <input type="number" pInputText [(ngModel)]="rowData.tentativas" />
+                        </ng-template>
+                        <ng-template #output>
+                            {{ rowData.tentativas }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td class="text-center">
+                    <p-cellEditor>
+                        <ng-template #input>
+                            <input type="checkbox" pInputText [(ngModel)]="rowData.bloqueado" />
+                        </ng-template>
+                        <ng-template #output>
+                            <span [class]="rowData.bloqueado ? 'text-red-500' : 'text-green-500'">
+                                {{ rowData.bloqueado ? 'Bloqueado' : 'Desbloqueado' }}
+                            </span>
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td class="text-center">
+                    <p-cellEditor>
+                        <ng-template #input>
+                            <input type="text" pInputText [(ngModel)]="rowData.origem" />
+                        </ng-template>
+                        <ng-template #output >
+                            {{ rowData.origem }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <div class="flex justify-center gap-2">
+                        @if (editing) {
+                        <button pButton pRipple pSaveEditableRow icon="pi pi-check" text rounded severity="info"></button> <!-- Salvar-->
+                        <button pButton pRipple pCancelEditableRow icon="pi pi-times" text rounded severity="danger"></button> <!-- Cancelar-->
+                        } @else {
+                        <button pButton pRipple pInitEditableRow icon="pi pi-pencil" text rounded severity="info"></button> <!-- Editar-->
+                        <button pButton pRipple pDeleteRow icon="pi pi-trash" text rounded severity="danger" (click)="deletar(rowData.id)"></button> <!-- Excluir-->
                         }
+
                     </div>
-
-                    <div class="field">
-                        <label for="tentativas">Tentativas</label>
-                        <p-inputNumber inputId="tentativas" formControlName="tentativas" [min]="1" styleClass="w-full"></p-inputNumber>
-                        @if (form.controls.tentativas.touched && form.controls.tentativas.invalid) {
-                        <small class="error">Informe pelo menos 1 tentativa.</small>
-                        }
-                    </div>
-
-                    <div class="field">
-                        <label for="origem">Origem</label>
-                        <input pInputText id="origem" type="text" formControlName="origem" placeholder="Ex: Firewall" class="w-full border-cyan-500/20 bg-slate-950/70 text-slate-100 placeholder:text-slate-500" />
-                        @if (form.controls.origem.touched && form.controls.origem.invalid) {
-                        <small class="error">Informe a origem do alerta.</small>
-                        }
-                    </div>
-
-                    <div class="field checkbox-field">
-                        <p-checkbox inputId="bloqueado" formControlName="bloqueado" binary="true"></p-checkbox>
-                        <label for="bloqueado">IP bloqueado</label>
-                    </div>
-
-                    <div class="buttons">
-                        <button pButton type="submit" label="Salvar" class="full-width !border-0 !bg-cyan-500 !text-slate-950 hover:!bg-cyan-400"></button>
-                        <button pButton type="button" label="Limpar" severity="secondary" class="full-width !border-0 !bg-slate-800 !text-cyan-100 hover:!bg-slate-700" (click)="limpar()"></button>
-                    </div>
-                </form>
-            </ng-template>
-        </p-card>
-
-        <p-card class="panel table-panel rounded-3xl bg-slate-900/90 text-slate-100 backdrop-blur-sm">
-            <ng-template pTemplate="title">Lista de IPs</ng-template>
-            <ng-template pTemplate="subtitle">Os suspeitos.</ng-template>
-            <ng-template pTemplate="content">
-                <p-table [value]="ips()" dataKey="id" responsiveLayout="scroll" styleClass="text-slate-100">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th class="bg-slate-950/70 text-cyan-200">IP</th>
-                            <th class="bg-slate-950/70 text-cyan-200">Tentativas</th>
-                            <th class="bg-slate-950/70 text-cyan-200">Status</th>
-                            <th class="bg-slate-950/70 text-cyan-200">Origem</th>
-                            <th class="bg-slate-950/70 text-cyan-200">Ações</th>
-                        </tr>
-                    </ng-template>
-
-                    <ng-template pTemplate="body" let-item>
-                        <tr [ngClass]="{ selected: item.id === editingId() }">
-                            <td>{{ item.ip }}</td>
-                            <td>{{ item.tentativas }} tentativas</td>
-                            <td>
-                                <p-tag [severity]="status(item.bloqueado).severity" [value]="status(item.bloqueado).text"></p-tag>
-                            </td>
-                            <td>{{ item.origem }}</td>
-                            <td>
-                                <div class="row-actions">
-                                    <button pButton type="button" label="Editar" class="!border-0 !bg-sky-500 !text-slate-950 hover:!bg-sky-400" (click)="editar(item)"></button>
-                                    <button pButton type="button" label="Remover" severity="danger" class="!border-0 !bg-rose-500 !text-white hover:!bg-rose-400" (click)="remover(item)"></button>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </ng-template>
-        </p-card>
-    </section>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
 </div>
