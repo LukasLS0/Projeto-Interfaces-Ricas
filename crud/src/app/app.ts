@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { InputText } from "primeng/inputtext";
 import { FormsModule } from "@angular/forms";
+import { DividerModule } from 'primeng/divider';
 
 
 interface IpBloqueado {
@@ -20,7 +21,7 @@ interface IpBloqueado {
 
 @Component({
   selector: 'app-root',
-  imports: [FormField, CommonModule, TableModule, ButtonModule, ToastModule, FormsModule],
+  imports: [FormField, CommonModule, TableModule, ButtonModule, ToastModule, FormsModule, DividerModule],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
