@@ -1,5 +1,5 @@
-import { Component, input, output } from '@angular/core';
-import type { IpBloqueado } from '../../models/ip-bloqueado';
+import { Component, inject } from '@angular/core';
+import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 
 @Component({
   selector: 'app-ipbloq-detalhar',
@@ -8,6 +8,9 @@ import type { IpBloqueado } from '../../models/ip-bloqueado';
   styleUrl: './ipbloq-detalhar.css',
 })
 export class IpbloqDetalhar {
-  registro = input.required<IpBloqueado>();
-  voltar = output<void>();
+  protected readonly ipBloqService = inject(IpBloqueadoService);
+
+  onVoltar(): void {
+    this.ipBloqService.voltar();
+  }
 }

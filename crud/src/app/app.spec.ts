@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { App } from './app';
+import { IpBloqueadoService } from './services/ip-bloqueado.service';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -33,8 +34,8 @@ describe('App', () => {
   });
 
   it('should start in listar view', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app.viewMode()).toBe('listar');
+    TestBed.createComponent(App);
+    const ipBloqService = TestBed.inject(IpBloqueadoService);
+    expect(ipBloqService.viewMode()).toBe('listar');
   });
 });

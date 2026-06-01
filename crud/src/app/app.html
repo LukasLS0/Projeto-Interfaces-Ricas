@@ -3,43 +3,34 @@
   <article class="card flex">
     <p>
       A quantidade total de endereços de IP cadastrados no sistema é de
-      <strong>{{ totalIps() }}</strong>.
+      <strong>{{ ipBloqService.totalIps() }}</strong>.
     </p>
     <p-divider layout="vertical" class="mx-4" />
     <p>
       O número de endereços IP que estão bloqueados no momento é
-      <strong>{{ ipsBloqueados() }}</strong>.
+      <strong>{{ ipBloqService.ipsBloqueados() }}</strong>.
     </p>
     <p-divider layout="vertical" class="mx-4" />
     <p>
-      A quantidade de endereços IP em status de alerta é <strong>{{ ipsAlerta() }}</strong>.
+      A quantidade de endereços IP em status de alerta é
+      <strong>{{ ipBloqService.ipsAlerta() }}</strong>.
     </p>
   </article>
 </section>
 
 <main class="card p-4 min-h-screen">
-  @switch (viewMode()) {
+  @switch (ipBloqService.viewMode()) {
     @case ('listar') {
-      <app-ipbloq-listar
-        [items]="ipBloqList()"
-        (incluir)="onIncluir()"
-        (detalhar)="onDetalhar($event)"
-        (alterar)="onAlterar($event)"
-        (deletar)="onDeletar($event)"
-      />
+      <app-ipbloq-listar />
     }
     @case ('incluir') {
-      <app-ipbloq-incluir (salvar)="onSalvarIncluir($event)" (voltar)="onVoltar()" />
+      <app-ipbloq-incluir />
     }
     @case ('detalhar') {
-      <app-ipbloq-detalhar [registro]="selectedIp()!" (voltar)="onVoltar()" />
+      <app-ipbloq-detalhar />
     }
     @case ('alterar') {
-      <app-ipbloq-alterar
-        [registro]="selectedIp()!"
-        (salvar)="onSalvarAlterar($event)"
-        (voltar)="onVoltar()"
-      />
+      <app-ipbloq-alterar />
     }
   }
 </main>

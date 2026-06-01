@@ -4,7 +4,7 @@
   </div>
 
   <p-table
-    [value]="items()"
+    [value]="ipBloqService.listar()"
     dataKey="id"
     styleClass="p-datatable-sm"
     responsiveLayout="scroll"
@@ -69,7 +69,7 @@
           <div class="flex justify-center gap-1">
             <p-button
               icon="pi pi-eye"
-              (click)="detalhar.emit(rowData)"
+              (click)="onDetalhar(rowData)"
               severity="secondary"
               rounded
               [text]="true"
@@ -77,7 +77,7 @@
             />
             <p-button
               icon="pi pi-pencil"
-              (click)="alterar.emit(rowData)"
+              (click)="onAlterar(rowData)"
               severity="secondary"
               rounded
               [text]="true"
@@ -85,7 +85,7 @@
             />
             <p-button
               icon="pi pi-trash"
-              (click)="deletar.emit(rowData.id)"
+              (click)="onRemover(rowData.id)"
               severity="danger"
               rounded
               [text]="true"
@@ -98,6 +98,6 @@
   </p-table>
 
   <div class="px-6 py-4 border-t border-gray-100 flex justify-end ">
-    <p-button label="Incluir" (click)="incluir.emit()" class="w-20" />
+    <p-button label="Incluir" (click)="onIncluir()" class="w-20" />
   </div>
 </div>

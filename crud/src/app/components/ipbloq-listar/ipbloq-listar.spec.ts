@@ -19,9 +19,6 @@ describe('IpbloqListar', () => {
 
     fixture = TestBed.createComponent(IpbloqListar);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('items', [
-      { id: 1, ip: '192.168.0.1', tentativas: 5, bloqueado: true, origem: 'Firewall' },
-    ]);
     await fixture.whenStable();
   });
 
