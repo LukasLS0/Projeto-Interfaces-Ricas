@@ -1,7 +1,8 @@
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormField } from '@angular/forms/signals';
 import { inicialIpBloq, type IpBloqueado } from '../../models/ip-bloqueado';
 import { createIpBloqForm } from '../../models/ip-bloqueado-form';
+import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 
 @Component({
   selector: 'app-ipbloq-alterar',
@@ -10,10 +11,7 @@ import { createIpBloqForm } from '../../models/ip-bloqueado-form';
   styleUrl: './ipbloq-alterar.css',
 })
 export class IpbloqAlterar {
-  registro = input.required<IpBloqueado>();
-
-  salvar = output<IpBloqueado>();
-  voltar = output<void>();
+  private readonly ipBloqService = inject(IpBloqueadoService);
 
   formError = signal<string | null>(null);
 
@@ -22,22 +20,29 @@ export class IpbloqAlterar {
 
   constructor() {
     effect(() => {
-      const reg = this.registro();
-      this.ipBloqModel.set({ ...reg });
+      const reg = this.ipBloqService.selected();
+      if (reg) {
+        this.ipBloqModel.set({ ...reg });
+      }
     });
   }
 
-  onSalvar() {
+  onSalvar(): void {
+    const registro = this.ipBloqService.selected();
+    if (!registro) {
+      return;
+    }
+
     if (this.ipBloqForm().valid()) {
       this.formError.set(null);
       const value = this.ipBloqForm().value();
-      this.salvar.emit({ ...value, id: this.registro().id });
+      this.ipBloqService.atualizar({ ...value, id: registro.id });
     } else {
       this.formError.set('Corrija os erros antes de salvar.');
     }
   }
 
-  onVoltar() {
-    this.voltar.emit();
+  onVoltar(): void {
+    this.ipBloqService.voltar();
   }
 }

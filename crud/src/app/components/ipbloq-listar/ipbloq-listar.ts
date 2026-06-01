@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 import type { IpBloqueado } from '../../models/ip-bloqueado';
 
 @Component({
@@ -11,10 +12,21 @@ import type { IpBloqueado } from '../../models/ip-bloqueado';
   styleUrl: './ipbloq-listar.css',
 })
 export class IpbloqListar {
-  items = input.required<IpBloqueado[]>();
+  protected readonly ipBloqService = inject(IpBloqueadoService);
 
-  incluir = output<void>();
-  detalhar = output<IpBloqueado>();
-  alterar = output<IpBloqueado>();
-  deletar = output<number>();
+  onIncluir(): void {
+    this.ipBloqService.abrirIncluir();
+  }
+
+  onDetalhar(registro: IpBloqueado): void {
+    this.ipBloqService.detalhar(registro);
+  }
+
+  onAlterar(registro: IpBloqueado): void {
+    this.ipBloqService.abrirAlterar(registro);
+  }
+
+  onRemover(id: number): void {
+    this.ipBloqService.remover(id);
+  }
 }

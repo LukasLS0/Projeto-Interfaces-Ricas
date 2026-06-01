@@ -1,7 +1,8 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormField } from '@angular/forms/signals';
 import { inicialIpBloq, type IpBloqueado } from '../../models/ip-bloqueado';
 import { createIpBloqForm } from '../../models/ip-bloqueado-form';
+import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 
 @Component({
   selector: 'app-ipbloq-incluir',
@@ -10,30 +11,29 @@ import { createIpBloqForm } from '../../models/ip-bloqueado-form';
   styleUrl: './ipbloq-incluir.css',
 })
 export class IpbloqIncluir {
-  salvar = output<IpBloqueado>();
-  voltar = output<void>();
+  private readonly ipBloqService = inject(IpBloqueadoService);
 
   formError = signal<string | null>(null);
 
   ipBloqModel = signal<IpBloqueado>({ ...inicialIpBloq });
   ipBloqForm = createIpBloqForm(this.ipBloqModel);
 
-  cadastrar() {
+  cadastrar(): void {
     if (this.ipBloqForm().valid()) {
       this.formError.set(null);
-      this.salvar.emit(this.ipBloqForm().value());
+      this.ipBloqService.inserir(this.ipBloqForm().value());
       this.limparForm();
     } else {
       this.formError.set('Corrija os erros antes de cadastrar.');
     }
   }
 
-  onVoltar() {
+  onVoltar(): void {
     this.limparForm();
-    this.voltar.emit();
+    this.ipBloqService.voltar();
   }
 
-  private limparForm() {
+  private limparForm(): void {
     this.ipBloqModel.set({ ...inicialIpBloq });
     this.ipBloqForm().reset();
     this.formError.set(null);
