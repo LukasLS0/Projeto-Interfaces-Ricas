@@ -1,14 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
-import { IpbloqAlterar } from './components/ipbloq-alterar/ipbloq-alterar';
-import { IpbloqDetalhar } from './components/ipbloq-detalhar/ipbloq-detalhar';
-import { IpbloqIncluir } from './components/ipbloq-incluir/ipbloq-incluir';
-import { IpbloqListar } from './components/ipbloq-listar/ipbloq-listar';
 import { IpBloqueadoService } from './services/ip-bloqueado.service';
 
 @Component({
   selector: 'app-root',
-  imports: [DividerModule, IpbloqListar, IpbloqIncluir, IpbloqDetalhar, IpbloqAlterar],
+  imports: [DividerModule, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
