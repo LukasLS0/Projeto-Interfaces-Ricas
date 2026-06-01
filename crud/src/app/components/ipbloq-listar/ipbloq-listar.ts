@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { IP_BLOQUEADO_NAV_STATE } from '../../models/ip-bloqueado-nav';
 import type { IpBloqueado } from '../../models/ip-bloqueado';
 import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 
@@ -22,15 +21,11 @@ export class IpbloqListar {
   }
 
   onDetalhar(registro: IpBloqueado): void {
-    void this.router.navigate(['/detalhe', registro.id], {
-      state: { [IP_BLOQUEADO_NAV_STATE]: registro },
-    });
+    void this.router.navigate(['/detalhe', registro.id]);
   }
 
   onAlterar(registro: IpBloqueado): void {
-    void this.router.navigate(['/alterar', registro.id], {
-      state: { [IP_BLOQUEADO_NAV_STATE]: registro },
-    });
+    void this.router.navigate(['/alterar', registro.id]);
   }
 
   onRemover(id: number): void {

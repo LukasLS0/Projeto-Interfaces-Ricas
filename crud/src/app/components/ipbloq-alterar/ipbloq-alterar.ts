@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormField } from '@angular/forms/signals';
-import { ipBloqueadoDoEstadoDaNavegacao } from '../../models/ip-bloqueado-nav';
 import { inicialIpBloq, type IpBloqueado } from '../../models/ip-bloqueado';
 import { createIpBloqForm } from '../../models/ip-bloqueado-form';
 import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
@@ -26,7 +25,7 @@ export class IpbloqAlterar implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const registro = ipBloqueadoDoEstadoDaNavegacao() ?? this.ipBloqService.buscarPorId(id);
+    const registro = this.ipBloqService.buscarPorId(id);
 
     if (!registro) {
       void this.router.navigate(['/listar']);
