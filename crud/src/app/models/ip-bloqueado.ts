@@ -13,5 +13,3 @@ export const inicialIpBloq: IpBloqueado = {
   bloqueado: false,
   origem: '',
 };
-
-export type ViewMode = 'listar' | 'incluir' | 'detalhar' | 'alterar';

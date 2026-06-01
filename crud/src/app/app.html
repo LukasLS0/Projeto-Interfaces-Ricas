@@ -19,18 +19,5 @@
 </section>
 
 <main class="card p-4 min-h-screen">
-  @switch (ipBloqService.viewMode()) {
-    @case ('listar') {
-      <app-ipbloq-listar />
-    }
-    @case ('incluir') {
-      <app-ipbloq-incluir />
-    }
-    @case ('detalhar') {
-      <app-ipbloq-detalhar />
-    }
-    @case ('alterar') {
-      <app-ipbloq-alterar />
-    }
-  }
+  <router-outlet />
 </main>
