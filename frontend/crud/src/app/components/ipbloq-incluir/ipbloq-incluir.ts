@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormField } from '@angular/forms/signals';
+import { tap } from 'rxjs';
 import { inicialIpBloq, type IpBloqueado } from '../../models/ip-bloqueado';
 import { createIpBloqForm } from '../../models/ip-bloqueado-form';
 import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
@@ -23,9 +24,17 @@ export class IpbloqIncluir {
   cadastrar(): void {
     if (this.ipBloqForm().valid()) {
       this.formError.set(null);
-      this.ipBloqService.inserir(this.ipBloqForm().value());
-      this.limparForm();
-      void this.router.navigate(['/listar']);
+      this.ipBloqService
+        .inserir(this.ipBloqForm().value())
+        .pipe(
+          tap(() => {
+            this.limparForm();
+            void this.router.navigate(['/listar']);
+          }),
+        )
+        .subscribe({
+          error: () => this.formError.set('Erro ao cadastrar. Tente novamente.'),
+        });
     } else {
       this.formError.set('Corrija os erros antes de cadastrar.');
     }

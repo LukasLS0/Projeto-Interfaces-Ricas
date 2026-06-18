@@ -1,66 +1,45 @@
-import { Injectable, computed, signal, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 import type { IpBloqueado } from '../models/ip-bloqueado';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class IpBloqueadoService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://congenial-chainsaw-jpwv5qww6xqh5xgw-3000.app.github.dev/api/ips';
+  private readonly apiUrl = 'http://localhost:3000/api/ips';
 
-
-  private readonly registros = signal<IpBloqueado[]>([]);
-
-  readonly totalIps = computed(() => this.registros().length);
-  readonly ipsBloqueados = computed(() => this.registros().filter((ip) => ip.bloqueado).length);
-  readonly ipsAlerta = computed(() => this.registros().filter((ip) => ip.tentativas > 10).length);
-
-  constructor() {
-    // Carrega os dados assim que o serviço é iniciado
-    this.carregarIps();
+  listar(): Observable<IpBloqueado[]> {
+    return this.http.get<IpBloqueado[]>(this.apiUrl).pipe(
+      catchError((erro) => this.tratarErro(erro)),
+    );
   }
 
-  // Busca inicial do backend
-  private carregarIps(): void {
-    this.http.get<IpBloqueado[]>(this.apiUrl).subscribe({
-      next: (dados) => this.registros.set(dados),
-      error: (err) => console.error('Erro ao carregar IPs do servidor:', err)
-    });
+  buscarPorId(id: number): Observable<IpBloqueado> {
+    return this.http.get<IpBloqueado>(`${this.apiUrl}/${id}`).pipe(
+      catchError((erro) => this.tratarErro(erro)),
+    );
   }
 
-  listar(): IpBloqueado[] {
-    return this.registros();
+  inserir(dto: IpBloqueado): Observable<IpBloqueado> {
+    return this.http.post<IpBloqueado>(this.apiUrl, dto).pipe(
+      catchError((erro) => this.tratarErro(erro)),
+    );
   }
 
-  buscarPorId(id: number): IpBloqueado | undefined {
-    return this.registros().find((ip) => ip.id === id);
+  atualizar(dto: IpBloqueado): Observable<IpBloqueado> {
+    return this.http.put<IpBloqueado>(`${this.apiUrl}/${dto.id}`, dto).pipe(
+      catchError((erro) => this.tratarErro(erro)),
+    );
   }
 
-  // Usando async/await com firstValueFrom para simplificar o fluxo junto com Signals
-  async inserir(dto: IpBloqueado): Promise<void> {
-    try {
-      const novoIp = await firstValueFrom(this.http.post<IpBloqueado>(this.apiUrl, dto));
-      this.registros.update((list) => [...list, novoIp]);
-    } catch (err) {
-      console.error('Erro ao inserir IP:', err);
-    }
+  remover(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError((erro) => this.tratarErro(erro)),
+    );
   }
 
-  async atualizar(dto: IpBloqueado): Promise<void> {
-    try {
-      const ipAtualizado = await firstValueFrom(this.http.put<IpBloqueado>(`${this.apiUrl}/${dto.id}`, dto));
-      this.registros.update((list) => list.map((ip) => (ip.id === dto.id ? ipAtualizado : ip)));
-    } catch (err) {
-      console.error('Erro ao atualizar IP:', err);
-    }
-  }
-
-  async remover(id: number): Promise<void> {
-    try {
-      await firstValueFrom(this.http.delete<void>(`${`${this.apiUrl}/${id}`}`));
-      this.registros.update((list) => list.filter((ip) => ip.id !== id));
-    } catch (err) {
-      console.error('Erro ao remover IP:', err);
-    }
+  private tratarErro(erro: unknown): Observable<never> {
+    console.error('Erro na API de IPs bloqueados:', erro);
+    return throwError(() => erro);
   }
 }
