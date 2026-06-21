@@ -1,5 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, of, switchMap } from 'rxjs';
 import type { IpBloqueado } from '../../models/ip-bloqueado';
 import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
 
@@ -9,24 +11,24 @@ import { IpBloqueadoService } from '../../services/ip-bloqueado.service';
   templateUrl: './ipbloq-detalhar.html',
   styleUrl: './ipbloq-detalhar.css',
 })
-export class IpbloqDetalhar implements OnInit {
-  protected readonly registro = signal<IpBloqueado | null>(null);
-
+export class IpbloqDetalhar {
   private readonly ipBloqService = inject(IpBloqueadoService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    const registro =  this.ipBloqService.buscarPorId(id);
-
-    if (!registro) {
-      void this.router.navigate(['/listar']);
-      return;
-    }
-
-    this.registro.set(registro);
-  }
+  protected readonly registro = toSignal(
+    this.route.paramMap.pipe(
+      switchMap((params) => {
+        const id = Number(params.get('id'));
+        return this.ipBloqService.buscarPorId(id);
+      }),
+      catchError(() => {
+        void this.router.navigate(['/listar']);
+        return of(null);
+      }),
+    ),
+    { initialValue: null as IpBloqueado | null },
+  );
 
   onVoltar(): void {
     void this.router.navigate(['/listar']);

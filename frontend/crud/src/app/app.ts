@@ -1,7 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
-import { IpBloqueadoService } from './services/ip-bloqueado.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +8,4 @@ import { IpBloqueadoService } from './services/ip-bloqueado.service';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly ipBloqService = inject(IpBloqueadoService);
-}
+export class App {}
