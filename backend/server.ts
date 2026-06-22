@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { autenticar, autenticarMiddleware } from './auth.ts';
 
 // Reaproveitando a interface do seu Angular
 export interface IpBloqueado {
@@ -21,7 +22,29 @@ let dados: IpBloqueado[] = [
   { id: 3, ip: '172.16.4.8', tentativas: 6, bloqueado: false, origin: 'Login web' },
 ].map(d => ({ ...d, origem: d.origin })); // Ajuste para a propriedade 'origem' em português
 
-// --- ROTAS DA API ---
+// --- ROTA DE AUTENTICAÇÃO (pública) ---
+
+// Login: recebe usuário e senha e devolve um token JWT.
+app.post('/api/login', (req, res) => {
+  const { usuario, senha } = req.body ?? {};
+
+  if (!usuario || !senha) {
+    return res.status(400).json({ message: 'Usuário e senha são obrigatórios.' });
+  }
+
+  const token = autenticar(usuario, senha);
+
+  if (!token) {
+    return res.status(401).json({ message: 'Usuário ou senha inválidos.' });
+  }
+
+  res.json({ token, usuario });
+});
+
+// A partir daqui, todas as rotas /api/ips exigem um token JWT válido.
+app.use('/api/ips', autenticarMiddleware);
+
+// --- ROTAS DA API (protegidas) ---
 
 // 1. Listar todos
 app.get('/api/ips', (req, res) => {

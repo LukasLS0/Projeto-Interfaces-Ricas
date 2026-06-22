@@ -1,0 +1,56 @@
+<section class="flex min-h-screen items-center justify-center p-4">
+  <div class="bg-white rounded-xl border border-gray-200 p-8 w-96 shadow-sm">
+    <div class="mb-8 text-center">
+      <h1 class="text-2xl font-semibold text-gray-900">Acesso ao Sistema</h1>
+      <p class="text-sm text-gray-500 mt-1">Gerenciamento de IPs Bloqueados</p>
+    </div>
+
+    <form class="flex flex-col gap-4" (submit)="$event.preventDefault(); entrar()">
+      <div>
+        <label for="usuario" class="block text-sm font-medium text-gray-700 mb-2">Usuário</label>
+        <input
+          type="text"
+          id="usuario"
+          autocomplete="username"
+          [formField]="loginForm.usuario"
+          placeholder="Digite seu usuário"
+          class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-200 transition-all duration-200"
+        />
+        @if (loginForm.usuario().touched() && loginForm.usuario().invalid()) {
+          @for (error of loginForm.usuario().errors(); track error) {
+            <small class="block text-red-500 text-xs mt-1.5 font-medium">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div>
+        <label for="senha" class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+        <input
+          type="password"
+          id="senha"
+          autocomplete="current-password"
+          [formField]="loginForm.senha"
+          placeholder="Digite sua senha"
+          class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-200 transition-all duration-200"
+        />
+        @if (loginForm.senha().touched() && loginForm.senha().invalid()) {
+          @for (error of loginForm.senha().errors(); track error) {
+            <small class="block text-red-500 text-xs mt-1.5 font-medium">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      @if (erro()) {
+        <p class="text-red-500 text-sm font-medium">{{ erro() }}</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="carregando()"
+        class="mt-2 w-full px-4 py-2.5 bg-gray-900 text-white rounded-lg font-medium text-sm hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500 transition-all duration-200"
+      >
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+  </div>
+</section>
