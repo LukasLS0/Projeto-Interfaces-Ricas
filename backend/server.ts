@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { autenticar, autenticarMiddleware } from './auth.ts';
+import { autenticar, autenticarMiddleware, cadastrarUsuario } from './auth.ts';
 
 // Reaproveitando a interface do seu Angular
 export interface IpBloqueado {
@@ -39,6 +39,18 @@ app.post('/api/login', (req, res) => {
   }
 
   res.json({ token, usuario });
+});
+
+// Cadastro de usuário (público): cria conta e devolve token JWT.
+app.post('/api/usuarios', (req, res) => {
+  const { usuario, senha } = req.body ?? {};
+  const resultado = cadastrarUsuario(usuario, senha);
+
+  if ('erro' in resultado) {
+    return res.status(resultado.status).json({ message: resultado.erro });
+  }
+
+  res.status(201).json({ token: resultado.token, usuario: resultado.usuario });
 });
 
 // A partir daqui, todas as rotas /api/ips exigem um token JWT válido.

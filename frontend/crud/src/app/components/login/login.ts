@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { form, FormField, required, minLength } from '@angular/forms/signals';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,7 +10,7 @@ interface Credenciais {
 
 @Component({
   selector: 'app-login',
-  imports: [FormField],
+  imports: [FormField, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

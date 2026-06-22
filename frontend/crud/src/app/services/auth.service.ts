@@ -28,6 +28,10 @@ export class AuthService {
       );
   }
 
+  estabelecerSessao(token: string, usuario: string): void {
+    this.salvarSessao(token, usuario);
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.usuarioKey);

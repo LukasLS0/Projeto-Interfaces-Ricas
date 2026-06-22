@@ -102,6 +102,33 @@ export function autenticar(usuario: string, senha: string): string | null {
   return gerarToken(encontrado);
 }
 
+type ResultadoCadastro =
+  | { token: string; usuario: string }
+  | { erro: string; status: number };
+
+// Cadastra um novo usuário e retorna o token de autenticação.
+export function cadastrarUsuario(usuario: string, senha: string): ResultadoCadastro {
+  if (!usuario?.trim() || !senha) {
+    return { erro: 'Usuário e senha são obrigatórios.', status: 400 };
+  }
+
+  if (senha.length < 4) {
+    return { erro: 'A senha deve ter pelo menos 4 caracteres.', status: 400 };
+  }
+
+  if (USUARIOS.some((u) => u.usuario === usuario.trim())) {
+    return { erro: 'Usuário já cadastrado.', status: 409 };
+  }
+
+  const novoId =
+    USUARIOS.length > 0 ? Math.max(...USUARIOS.map((u) => u.id)) + 1 : 1;
+  const novoUsuario: Usuario = { id: novoId, usuario: usuario.trim(), senha };
+
+  USUARIOS.push(novoUsuario);
+
+  return { token: gerarToken(novoUsuario), usuario: novoUsuario.usuario };
+}
+
 // Estende o Request do Express para carregar os dados do usuário autenticado.
 export interface RequestAutenticado extends Request {
   usuario?: TokenPayload;
